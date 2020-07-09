@@ -8,7 +8,15 @@
 
 import Foundation
 
-struct ContactModel {
+class Contacts: Codable {
+    let contacts: [Contact]
+    
+    init(contacts: [Contact]) {
+        self.contacts = contacts
+    }
+}
+
+struct Contact: Codable {
    
     let name: String
     let id: String

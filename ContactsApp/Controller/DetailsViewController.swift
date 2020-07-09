@@ -17,19 +17,19 @@ class DetailsViewController: UIViewController {
     
     @IBOutlet weak var detailTableView: UITableView!
     
-    var noImage: UIImage? = UIImage(named: "noImage")
-    
-    var contact: ContactModel?
+//    var noImage: UIImage? = UIImage(named: "noImage")
+//
+//    var contact: Contact?
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        EntireNameLabel.text = contact?.name
-        detailLabel.text = contact?.companyName
+//        EntireNameLabel.text = contact?.name
+//        detailLabel.text = contact?.companyName
         
-        guard let urlImage = contact?.largeImageURL else {
-            return
-        }
+//        guard let urlImage = contact?.largeImageURL else {
+//            return
+//        }
 //        self.largeImageView.sd_setImage(with: URL(string: urlImage), placeholderImage: noImage)
         
     }

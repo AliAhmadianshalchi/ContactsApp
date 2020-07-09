@@ -8,31 +8,36 @@
 
 import Foundation
 
-struct ContactData: Codable {
-    let name: String
-    let id: String
-    let companyName: String
-    let isFavorite: Bool
-    let smallImageURL: String
-    let largeImageURL: String
-    let emailAddress: String
-    let birthdate: String
+struct ContactData: Codable , Equatable {
     
-    let phone: Phone
-    let address: Address
+    static func == (lhs: ContactData, rhs: ContactData) -> Bool {
+        return lhs.id == rhs.id
+    }
+    
+    let name: String?
+    let id: String
+    let companyName: String?
+    let isFavorite: Bool?
+    let smallImageURL: String?
+    let largeImageURL: String?
+    let emailAddress: String?
+    let birthdate: String?
+    
+    let phone: Phone?
+    let address: Address?
     
 }
 
 struct Phone: Codable {
-    let work: String
-    let home: String
-    let mobile: String
+    let work: String?
+    let home: String?
+    let mobile: String?
 }
 
 struct Address: Codable {
-    let street: String
-    let city: String
-    let state: String
-    let country: String
-    let zipCode: String
+    let street: String?
+    let city: String?
+    let state: String?
+    let country: String?
+    let zipCode: String?
 }

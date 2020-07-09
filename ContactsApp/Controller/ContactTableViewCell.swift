@@ -16,7 +16,7 @@ class ContactTableViewCell: UITableViewCell{
     @IBOutlet weak var detailsLabel: UILabel!
     @IBOutlet weak var favoriteStar: UIImageView!
     
-    var noImage: UIImage? = UIImage(named: "noImage")
+//    var noImage: UIImage? = UIImage(named: "noImage")
     
     override func awakeFromNib() {
         super.awakeFromNib()
@@ -24,15 +24,16 @@ class ContactTableViewCell: UITableViewCell{
 
     override func setSelected(_ selected: Bool, animated: Bool) {
         super.setSelected(selected, animated: animated)
+        
     }
-    
-    func setup(_ Contact: ContactModel) {
-        self.nameAndLastNameLabel.text = Contact.name
-        self.detailsLabel.text = Contact.companyName
+//
+//    func setup(_ Contact: Contact) {
+//        self.nameAndLastNameLabel.text = Contact.name
+//        self.detailsLabel.text = Contact.companyName
         
 //        self.smallImageView.sd_setImage(with: URL(string: Contact.smallImageURL), placeholderImage: noImage)
         
-    }
+//    }
     
     
 }

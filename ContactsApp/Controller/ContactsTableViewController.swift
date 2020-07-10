@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import SDWebImage
 
 class ContactsTableViewController: UITableViewController  {
     
@@ -14,6 +15,15 @@ class ContactsTableViewController: UITableViewController  {
     
     var contacts: [ContactData] = []
     let cellId = "ContactCell"
+    
+    var noImage: UIImage? = UIImage(named: "noImage")
+    let detailsViewController = DetailsViewController()
+    
+    var rowToshow: ContactData? {
+        didSet {
+            performSegue(withIdentifier: "showDetails", sender: self)
+        }
+    }
     
     let ContactUrl = URL(string: "https://s3.amazonaws.com/technical-challenge/v3/contacts.json")
     
@@ -49,6 +59,23 @@ class ContactsTableViewController: UITableViewController  {
             }
         }.resume()
         
+    }
+    
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        if let destination = segue.destination as? DetailsViewController {
+            destination.contact = rowToshow
+            ContactsTableView.deselectRow(at: ContactsTableView.indexPathForSelectedRow!, animated: true)
+        }
+    }
+    
+    override func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
+        
+        switch(section) {
+          case 0:return "Favorite Contacts"
+
+          default :return "Other Contacts"
+
+        }
     }
     
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
@@ -87,6 +114,7 @@ class ContactsTableViewController: UITableViewController  {
             contact = favorites[indexPath.row]
         }
         
+        cell.nameAndLastNameLabel.text?.sorted()
             
         cell.nameAndLastNameLabel.text = contact?.name
         cell.detailsLabel.text = contact?.companyName
@@ -106,7 +134,11 @@ class ContactsTableViewController: UITableViewController  {
         return cell
     }
     
-
- 
+    override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        
+        rowToshow = contacts[indexPath.row]
+        
+    }
+    
 }
 

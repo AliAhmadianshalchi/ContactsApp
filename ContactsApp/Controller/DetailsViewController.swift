@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import SDWebImage
 
 class DetailsViewController: UIViewController {
 
@@ -17,20 +18,17 @@ class DetailsViewController: UIViewController {
     
     @IBOutlet weak var detailTableView: UITableView!
     
-//    var noImage: UIImage? = UIImage(named: "noImage")
-//
-//    var contact: Contact?
+    let DetailCellId = "detailCellId"
+    var noImage: UIImage? = UIImage(named: "noImage")
+    
+    var contact: ContactData?
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
-//        EntireNameLabel.text = contact?.name
-//        detailLabel.text = contact?.companyName
-        
-//        guard let urlImage = contact?.largeImageURL else {
-//            return
-//        }
-//        self.largeImageView.sd_setImage(with: URL(string: urlImage), placeholderImage: noImage)
+        EntireNameLabel.text = contact?.name ?? ""
+        detailLabel.text = contact?.companyName ?? "" 
+        self.largeImageView.sd_setImage(with: URL(string: contact?.largeImageURL ?? ""), placeholderImage: noImage)
         
     }
     
@@ -38,14 +36,24 @@ class DetailsViewController: UIViewController {
 
 }
 
-//extension DetailsViewController: UITableViewDelegate , UITableViewDataSource {
-//
-//    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-//        <#code#>
-//    }
-//
-//    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-//        <#code#>
-//    }
-//
-//}
+extension DetailsViewController: UITableViewDelegate , UITableViewDataSource {
+    
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        return [contact].count
+    }
+    
+    func numberOfSections(in tableView: UITableView) -> Int {
+        return 1
+    }
+    
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        guard let cell = tableView.dequeueReusableCell(withIdentifier: DetailCellId) as? DetailsTableViewCell else { return UITableViewCell() }
+        
+        cell.nameOfRow.text = contact?.name
+        cell.importantDetail.text = contact?.companyName
+        cell.kindOfPhoneNumber.text = contact?.companyName
+        
+        return cell
+    }
+
+}

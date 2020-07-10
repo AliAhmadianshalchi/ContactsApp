@@ -8,11 +8,7 @@
 
 import Foundation
 
-struct ContactData: Codable , Equatable {
-    
-    static func == (lhs: ContactData, rhs: ContactData) -> Bool {
-        return lhs.id == rhs.id
-    }
+struct ContactData: Codable {
     
     let name: String?
     let id: String

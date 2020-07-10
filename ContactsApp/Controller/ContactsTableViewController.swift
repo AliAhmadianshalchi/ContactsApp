@@ -12,78 +12,101 @@ class ContactsTableViewController: UITableViewController  {
     
     @IBOutlet var ContactsTableView: UITableView!
     
+    var contacts: [ContactData] = []
     let cellId = "ContactCell"
-    var contactManager = ContactManager()
     
-    var rowToshow: ContactModel? {
-        didSet {
-            performSegue(withIdentifier: "showDetails", sender: self)
-        }
-    }
+    let ContactUrl = URL(string: "https://s3.amazonaws.com/technical-challenge/v3/contacts.json")
     
     override func viewDidLoad() {
         super.viewDidLoad()
-
-        contactManager.delegate = self
+        
+        downloadJson()
+        tableView.tableFooterView = UIView()
         
         ContactsTableView.delegate = self
         ContactsTableView.dataSource = self
         
     }
     
-    override func tableView(_ ContactsTableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
-        let label = UILabel()
-        label.text = "header"
-        label.backgroundColor = UIColor.lightGray
-        return label
+    func downloadJson() {
+        guard let downloadURL = ContactUrl else { return }
+        URLSession.shared.dataTask(with: downloadURL) { data, urlResponse, error in
+            guard let data = data, error == nil, urlResponse != nil else {
+                print("something is wrong")
+                return
+            }
+            print("downloaded")
+            do
+            {
+                let decoder = JSONDecoder()
+                let downloadedContacts = try decoder.decode([ContactData].self, from: data)
+                self.contacts = downloadedContacts
+                DispatchQueue.main.async {
+                    self.ContactsTableView.reloadData()
+                }
+            } catch {
+                print("something wrong after downloaded")
+            }
+        }.resume()
+        
+    }
+    
+    override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        
+        if section == 0  {
+            let favorites = contacts.filter { (contactData) -> Bool in
+                return contactData.isFavorite ?? false
+            }
+            return favorites.count
+        } else {
+            let favorites = contacts.filter { (contactData) -> Bool in
+                return !(contactData.isFavorite ?? true)
+            }
+            return favorites.count
+        }
     }
     
     override func numberOfSections(in tableView: UITableView) -> Int {
         return 2
     }
     
-    override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-
-        return contactManager.parseJSON(ContactData)
-    }
-    
-    override func tableView(_ ContactsTableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        
+    override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         guard let cell = tableView.dequeueReusableCell(withIdentifier: cellId) as? ContactTableViewCell else { return UITableViewCell() }
-        cell.setup(contacts[indexPath.row])
         
+        let contact: ContactData?
+        
+        if indexPath.section == 0  {
+            let favorites = contacts.filter { (contactData) -> Bool in
+                return contactData.isFavorite ?? false
+            }
+            contact = favorites[indexPath.row]
+        } else {
+            let favorites = contacts.filter { (contactData) -> Bool in
+                return !(contactData.isFavorite ?? true)
+            }
+            contact = favorites[indexPath.row]
+        }
+        
+            
+        cell.nameAndLastNameLabel.text = contact?.name
+        cell.detailsLabel.text = contact?.companyName
+        cell.favoriteStar.image = indexPath.section == 0 ? UIImage.init(systemName: "star.fill"): UIImage.init(systemName: "star")
+        
+        if let imageURL = URL(string: contact?.smallImageURL ?? "") {
+            DispatchQueue.global().async {
+                let data = try? Data(contentsOf: imageURL)
+                if let data = data {
+                    let image = UIImage(data: data)
+                    DispatchQueue.main.async {
+                        cell.smallImageView.image = image
+                    }
+                }
+            }
+        }
         return cell
     }
     
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        if let destination = segue.destination as? DetailsViewController {
-            destination.contact = rowToshow
-        }
-    }
-    
-    override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-            performSegue(withIdentifier: "showDetails", sender: self)
-            rowToshow = contacts[indexPath.row]
-        }
 
  
-}
-
-extension ContactsTableViewController: ContactManagerDelegate {
-    
-    func didUpdateContact(_ contactManager: ContactManager, contact: ContactModel) {
-        
-        DispatchQueue.main.async {
-//            self.temperatureLabel.text = contact.
-//            self.conditionImageView.image = UIImage(systemName: weather.conditionName)
-//            self.cityLabel.text = weather.cityName
-        }
-//        
-    }
-    
-    func didFailWithError(error: Error) {
-        print(error)
-    }
-    
 }
 

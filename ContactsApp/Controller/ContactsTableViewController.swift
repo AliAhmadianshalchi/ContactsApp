@@ -113,8 +113,6 @@ class ContactsTableViewController: UITableViewController  {
             }
             contact = favorites[indexPath.row]
         }
-        
-        cell.nameAndLastNameLabel.text?.sorted()
             
         cell.nameAndLastNameLabel.text = contact?.name
         cell.detailsLabel.text = contact?.companyName
@@ -136,7 +134,22 @@ class ContactsTableViewController: UITableViewController  {
     
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         
-        rowToshow = contacts[indexPath.row]
+        
+        let contact: ContactData?
+        
+        if indexPath.section == 0  {
+            let favorites = contacts.filter { (contactData) -> Bool in
+                return contactData.isFavorite ?? false
+            }
+            contact = favorites[indexPath.row]
+        } else {
+            let favorites = contacts.filter { (contactData) -> Bool in
+                return !(contactData.isFavorite ?? true)
+            }
+            contact = favorites[indexPath.row]
+        }
+        
+        rowToshow = contact
         
     }
     

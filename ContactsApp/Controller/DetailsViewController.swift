@@ -16,12 +16,18 @@ class DetailsViewController: UIViewController {
     @IBOutlet weak var EntireNameLabel: UILabel!
     @IBOutlet weak var detailLabel: UILabel!
     
-    @IBOutlet weak var detailTableView: UITableView!
+    @IBOutlet weak var HomePhoneLabel: UILabel!
+    @IBOutlet weak var MobilePhoneLabel: UILabel!
+    @IBOutlet weak var workPhoneLabel: UILabel!
+    @IBOutlet weak var birthdateLabel: UILabel!
+    @IBOutlet weak var emailLabel: UILabel!
+    
     
     let DetailCellId = "detailCellId"
     var noImage: UIImage? = UIImage(named: "noImage")
     
     var contact: ContactData?
+
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -30,30 +36,13 @@ class DetailsViewController: UIViewController {
         detailLabel.text = contact?.companyName ?? "" 
         self.largeImageView.sd_setImage(with: URL(string: contact?.largeImageURL ?? ""), placeholderImage: noImage)
         
+        HomePhoneLabel.text = contact?.phone?.home ?? ""
+        MobilePhoneLabel.text = contact?.phone?.mobile ?? ""
+        workPhoneLabel.text = contact?.phone?.work ?? ""
+        emailLabel.text = contact?.emailAddress ?? ""
+        birthdateLabel.text = contact?.birthdate ?? ""
     }
     
-
 
 }
 
-extension DetailsViewController: UITableViewDelegate , UITableViewDataSource {
-    
-    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return [contact].count
-    }
-    
-    func numberOfSections(in tableView: UITableView) -> Int {
-        return 1
-    }
-    
-    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        guard let cell = tableView.dequeueReusableCell(withIdentifier: DetailCellId) as? DetailsTableViewCell else { return UITableViewCell() }
-        
-        cell.nameOfRow.text = contact?.name
-        cell.importantDetail.text = contact?.companyName
-        cell.kindOfPhoneNumber.text = contact?.companyName
-        
-        return cell
-    }
-
-}
